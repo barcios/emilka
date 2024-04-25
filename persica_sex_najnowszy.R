@@ -27,6 +27,7 @@ library(hrbrthemes)
 library(viridis)
 library(agricolae)
 library(ggbreak)
+library(ggbreak)
 
 setwd("C:/Users/Mylka/Desktop/MAGISTERKA")
 
@@ -712,24 +713,30 @@ data=na.omit(data)
 #data$flower_no=as.factor(data$flower_no)
 
 data$year=as.factor(data$year)
-library(ggbreak)
+
 
 ###### Brak podpisów legendy, za duża legenda########## BARTEK
+
 
 wyk <- ggplot(data, aes(fill=whorl, y=nectar_v, x=year)) + 
   geom_boxplot() +
   geom_jitter(color="black", size=2, alpha=0.5) +
-  scale_y_break(c(16, 23)) +
-  theme_classic() 
- 
-wyk +  labs(x='Rok', y='Objętość nektaru [µl]', title='Objętość nektaru w zewnętrzych i wewnętrznych nektarnikach') +
-  theme(text = element_text(size = 20),plot.title = element_text(hjust=0.5, size=20, face='bold')) +
-  scale_fill_manual(values=c("deeppink4","grey"),
-                      font("xy.text", size = 12, color = "black") +
-                      font("xlab", size = 15, color = "black") +
-                      font("ylab", size = 15, color = "black") +
-                      font("legend.title", size = 10, color = "black") +
-                      font("legend.text", size = 10, color = "black"))
+  scale_y_continuous(breaks = c(16, 23)) +  # Zmiana na scale_y_continuous
+  theme_classic() +
+  labs(x='Rok', y='Objętość nektaru [µl]', title='Objętość nektaru w zewnętrznych i wewnętrznych nektarnikach') +
+  theme(text = element_text(size = 20),
+        plot.title = element_text(hjust=0.5, size=20, face='bold'),
+        axis.text = element_text(size = 15),  # Zmiana rozmiaru czcionki na osiach
+        axis.title = element_text(size = 15),
+        legend.text = element_text(size = 15, color = "black"),  # Zwiększono rozmiar czcionki w legendzie
+        legend.title = element_text(size = 15, color = "black"))
+
+wyk + scale_fill_manual(values=c("deeppink4","grey"),
+                       labels=c("Zewnętrzny", "Wewnętrzny"),
+                       name="Typ nektarnika")
+
+
+
 
 #ggsave("Fig.7.tiff", units="in", width=8, height=6, dpi=300, compression = 'lzw')
 ## TIME COMPARISON IN MORPHOGROUP
@@ -831,7 +838,7 @@ x=kruskal.test(data$pollen,data$morph, alpha = 0.05, p.adj="bonferroni")
   print(x)
  
   
-###Podpisy osi X nie działają####  BARTEK
+###Podpisy osi X nie działają####  BARTEK - już działa
    
 ggplot(data, aes(fill=morph, y=pollen, x=morph)) + 
   geom_bar(position='dodge', stat='identity') +
@@ -841,7 +848,7 @@ ggplot(data, aes(fill=morph, y=pollen, x=morph)) +
   scale_fill_manual('morph', values=c("darkseagreen3","plum3"), name = "Kolor:", labels = c(("Jasna"),("Ciemna"))) 
                      ##scale_x_discrete(labels=c(("Jasna"),("Ciemna"))))
 
-
+library(hrbrthemes)
 
 sample_size = data %>% group_by(morph) %>% summarize(num=n())
 
@@ -854,7 +861,7 @@ data %>%
   geom_boxplot(width=0.1, color="black", alpha=0.2) +
   
   theme_ipsum(base_size = 19,  axis_title_size = 20) +
-  scale_fill_manual(values = c("","deeppink4"))+
+  scale_fill_manual(values = c("darkseagreen3","deeppink4"))+
   theme(legend.position="none",
     plot.title = element_text(size=19)) +
   ggtitle("Pollen deposition") +
